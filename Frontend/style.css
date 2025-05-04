@@ -1,0 +1,211 @@
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f0f4f8;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    background: linear-gradient(135deg, #e0eafc, #f0f4f8);
+    border: 1px solid #e0e0e0;
+}
+
+h2 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 3px rgba(0,0,0,0.05);
+}
+
+.form-step {
+    display: none;
+}
+
+.form-step.active {
+    display: block;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+label {
+    display: block;
+    margin-top: 15px;
+    font-weight: 600;
+    color: #2c3e50;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.03);
+}
+
+input[type="text"],
+input[type="password"],
+select {
+    width: 100%;
+    padding: 12px 15px;
+    margin-top: 8px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    font-size: 1em;
+    background-color: #f8f8f8;
+    color: #333;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+select:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.3), 0 0 10px rgba(76, 175, 80, 0.1);
+    background-color: #fff;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 25px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+    font-size: 1.1em;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+}
+
+button:hover {
+    background-color: #45a049;
+    box-shadow: 0 3px 7px rgba(0,0,0,0.15);
+    transform: translateY(-2px);
+}
+
+button:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.3), 0 0 10px rgba(76, 175, 80, 0.1);
+}
+
+.summary-page {
+    background-color: #f5f5f5;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 30px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    background: linear-gradient(135deg, #f8f8f8, #fff);
+    border: 1px solid #e0e0e0;
+}
+
+.summary-item {
+    margin-bottom: 12px;
+    font-size: 1em;
+    color: #444;
+}
+
+.summary-item strong {
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.error-message {
+    color: #e74c3c;
+    margin-top: 10px;
+    font-size: 0.9em;
+    animation: shake 0.5s ease-in-out;
+    background-color: #fcebeb;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #f9d4d4;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+    50% { transform: translateX(-5px); }
+}
+
+#passwordStrength {
+    margin-top: 10px;
+    font-size: 0.9em;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+#passwordStrength.weak { color: #e74c3c; }
+#passwordStrength.medium { color: #f39c12; }
+#passwordStrength.strong { color: #2ecc71; }
+
+.show-password-checkbox {
+    margin-left: 10px;
+    font-weight: normal;
+    color: #555;
+    font-size: 0.95em;
+}
+
+.summary-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+#photoPreview {
+    margin-top: 15px;
+    border-radius: 8px;
+    max-width: 100%;
+    height: auto;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+    border: 1px solid #ddd;
+}
+
+#photoPreview:hover {
+    transform: scale(1.03);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+#companyField {
+    margin-top: 10px;
+}
+
+#genderSection {
+    margin-top: 20px;
+    background-color: #f8f8f8;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+#customGender {
+    margin-top: 8px;
+    background-color: #fff;
+    color: #333;
+}
+input[type="radio"]{
+    margin-right: 5px;
+}
+input[type="radio"]:checked + label{
+    color:#008000;
+    font-weight: bold;
+}
+.form-step h3{
+    color: #4a148c;
+    text-align: center;
+    margin-bottom: 20px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+}
+.summary-page h3{
+    color: #4a148c;
+    margin-bottom: 20px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+}

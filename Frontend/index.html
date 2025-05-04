@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Multi-Step Profile Form</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+    <div class="container">
+        <h2>User Profile Update</h2>
+        <form id="profileForm" enctype="multipart/form-data">
+
+            <div class="form-step active" id="step-1">
+                <h3>Step 1: Personal Info</h3>
+
+                <label>Profile Photo:</label>
+                <input type="file" id="profilePhoto" name="profilePhoto" accept="image/png, image/jpeg"/><br>
+                <img id="photoPreview" width="100" style="display:none;"/>
+
+                <label>Username:</label>
+                <input type="text" id="username" name="username" required/><span id="usernameStatus"></span>
+
+                <label>Type Password:</label>
+                <input type="password" id="newPassword" name="newPassword" onkeyup="checkPasswordMatch();"/>
+                <label class="show-password-checkbox">
+                    <input type="checkbox" onclick="togglePasswordVisibility('newPassword')"> Show Password
+                </label>
+                <div id="passwordStrength"></div>
+
+                <label>Confirm Password:</label>
+                <input type="password" id="confirmNewPassword" name="confirmNewPassword" onkeyup="checkPasswordMatch();"/>
+                <span id="passwordMatchStatus"></span>
+
+                <button type="button" onclick="nextStep()">Next</button>
+            </div>
+
+            <div class="form-step" id="step-2">
+                <h3>Step 2: Profession</h3>
+                <select name="profession" id="profession" onchange="toggleFields()" required>
+                    <option value="">Select Profession</option>
+                    <option value="Student">Student</option>
+                    <option value="Working Professional">Working Professional</option>
+                    <option value="Entrepreneur">Entrepreneur</option>
+                </select><br>
+
+                <div id="companyField">
+                    <input type="text" name="company" id="company" placeholder="Company Name">
+                </div>
+
+                <div id="genderSection" style="display: none; margin-top: 10px;">
+                    <label><strong>Gender:</strong></label><br>
+                    <input type="radio" name="gender" value="Male" onchange="handleGenderChange()"> Male<br>
+                    <input type="radio" name="gender" value="Female" onchange="handleGenderChange()"> Female<br>
+                    <input type="radio" name="gender" value="Other" onchange="handleGenderChange()"> Other<br>
+                    <input type="text" name="customGender" id="customGender" placeholder="Please specify" style="display: none; margin-top: 5px;">
+                </div>
+
+                <label>Address Line 1:</label>
+                <input type="text" id="addressLine1" name="addressLine1"/>
+
+                <button type="button" onclick="prevStep()">Back</button>
+                <button type="button" onclick="nextStep()">Next</button>
+            </div>
+
+            <div class="form-step" id="step-3">
+                <h3>Step 3: Preferences</h3>
+
+                <label>Country:</label>
+                <select id="country" name="country"></select>
+
+                <label>State:</label>
+                <select id="state" name="state"></select>
+
+                <label>City:</label>
+                <select id="city" name="city"></select>
+
+                <label>Subscription Plan:</label>
+                <select id="plan" name="plan">
+                    <option value="Basic">Basic</option>
+                    <option value="Pro">Pro</option>
+                    <option value="Enterprise">Enterprise</option>
+                </select>
+
+                <label>
+                    <input type="checkbox" name="newsletter" checked/>
+                    Subscribe to Newsletter
+                </label>
+
+                <button type="button" onclick="prevStep()">Back</button>
+                <button type="button" onclick="showSummary()">Review & Submit</button>
+            </div>
+
+            <div class="form-step" id="step-4">
+                <h3>Review Your Information</h3>
+                <div id="summaryContent" class="summary-page">
+                    </div>
+                <div class="summary-actions">
+                    <button type="button" onclick="prevStep()">Back to Edit</button>
+                    <button type="submit">Submit Profile</button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
