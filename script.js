@@ -1,17 +1,40 @@
 let currentStep = 1;
-showStep(currentStep);
+const form = document.getElementById("profileForm");
+
+window.onload = function () {
+    showStep(currentStep);
+    loadCountries();
+};
+
+function showStep(step) {
+    let steps = document.querySelectorAll(".form-step");
+    steps.forEach((s) => (s.style.display = "none"));
+    steps[step - 1].style.display = "block";
+    currentStep = step;
+}
 
 function nextStep() {
-    if (currentStep === 1) {
-        const newPassword = document.getElementById("newPassword").value;
-        const confirmNewPassword = document.getElementById("confirmNewPassword").value;
-        if (newPassword !== confirmNewPassword) {
-            alert("Passwords do not match. Please retype.");
-            return;
+    const currentForm = document.getElementById(`step-${currentStep}`);
+    const inputs = currentForm.querySelectorAll('input, select');
+    let valid = true;
+
+    inputs.forEach(input => {
+        if (input.hasAttribute('required') && !input.value.trim()) {
+            valid = false;
+            input.style.borderColor = "red";
+            input.classList.add('error-input');
+        } else {
+            input.style.borderColor = "";
+            input.classList.remove('error-input');
         }
+    });
+
+    if (valid) {
+        currentStep++;
+        showStep(currentStep);
+    } else {
+        alert("Please fill in all required fields.");
     }
-    currentStep++;
-    showStep(currentStep);
 }
 
 function prevStep() {
@@ -19,18 +42,48 @@ function prevStep() {
     showStep(currentStep);
 }
 
-function showStep(step) {
-    document.querySelectorAll(".form-step").forEach((div, index) => {
-        div.style.display = index === step - 1 ? "block" : "none";
-    });
+function togglePasswordVisibility(inputId) {
+    let passwordInput = document.getElementById(inputId);
+    passwordInput.type = passwordInput.type === "password" ? "text" : "password";
+}
 
-    if (step === 4) generateSummary();
+function checkPasswordMatch() {
+    let password = document.getElementById("newPassword").value;
+    let confirmPassword = document.getElementById("confirmNewPassword").value;
+    let matchStatus = document.getElementById("passwordMatchStatus");
+    let strength = document.getElementById("passwordStrength");
+
+    if (password.length === 0) {
+        strength.className = "";
+        strength.textContent = "";
+    } else if (password.length < 8) {
+        strength.className = "weak";
+        strength.textContent = "Weak";
+    } else if (password.length < 12) {
+        strength.className = "medium";
+        strength.textContent = "Medium";
+    } else {
+        strength.className = "strong";
+        strength.textContent = "Strong";
+    }
+
+    if (confirmPassword !== "") {
+        if (password === confirmPassword) {
+            matchStatus.textContent = "Passwords match";
+            matchStatus.style.color = "green";
+        } else {
+            matchStatus.textContent = "Passwords do not match";
+            matchStatus.style.color = "red";
+        }
+    } else {
+        matchStatus.textContent = "";
+    }
 }
 
 function toggleFields() {
-    const profession = document.getElementById("profession").value;
-    const companyField = document.getElementById("companyField");
-    const genderSection = document.getElementById("genderSection");
+    let profession = document.getElementById("profession").value;
+    let companyField = document.getElementById("companyField");
+    let genderSection = document.getElementById("genderSection");
 
     if (profession === "Entrepreneur") {
         companyField.style.display = "none";
@@ -44,42 +97,19 @@ function toggleFields() {
     }
 }
 
-
-
 function handleGenderChange() {
-    const otherGender = document.querySelector("input[name='gender'][value='Other']").checked;
-    document.getElementById("customGender").style.display = otherGender ? "inline-block" : "none";
-}
+    let otherGenderInput = document.getElementById("customGender");
+    let genderRadios = document.querySelectorAll('input[name="gender"]');
+    let otherSelected = false;
 
-function checkPasswordMatch() {
-    const newPassword = document.getElementById("newPassword").value;
-    const confirmNewPassword = document.getElementById("confirmNewPassword").value;
-    const passwordMatchStatus = document.getElementById("passwordMatchStatus");
-
-    if (confirmNewPassword !== "") {
-        if (newPassword === confirmNewPassword) {
-            passwordMatchStatus.textContent = "Passwords match";
-            passwordMatchStatus.style.color = "green";
-        } else {
-            passwordMatchStatus.textContent = "Passwords do not match";
-            passwordMatchStatus.style.color = "red";
+    genderRadios.forEach(radio => {
+        if (radio.value === "Other" && radio.checked) {
+            otherSelected = true;
         }
-    } else {
-        passwordMatchStatus.textContent = "";
-    }
+    });
+
+    otherGenderInput.style.display = otherSelected ? "block" : "none";
 }
-
-function togglePasswordVisibility(inputId) {
-    const passwordInput = document.getElementById(inputId);
-    const showCheckbox = passwordInput.nextElementSibling.querySelector('input[type="checkbox"]');
-
-    if (showCheckbox.checked) {
-        passwordInput.type = "text";
-    } else {
-        passwordInput.type = "password";
-    }
-}
-
 
 const countrySelect = document.getElementById("country");
 const stateSelect = document.getElementById("state");
@@ -137,87 +167,95 @@ stateSelect.addEventListener("change", async () => {
     }
 });
 
-function generateSummary() {
-    const summary = document.getElementById("summaryContent");
-    summary.innerHTML = '';
+function showSummary() {
+    let steps = document.querySelectorAll(".form-step");
+    steps.forEach((s) => (s.style.display = "none"));
+    document.getElementById("step-4").style.display = "block";
+    currentStep = 4;
 
-    const formData = new FormData(document.getElementById("profileForm"));
-    const data = {};
-    for (let [key, value] of formData.entries()) {
-        data[key] = value;
+    const formData = new FormData(form);
+    let summaryContent = document.getElementById("summaryContent");
+    summaryContent.innerHTML = `
+        <h3>Personal Information</h3>
+        <div class="summary-item"><strong>Username:</strong> <span>${formData.get("username")}</span></div>
+    `;
+
+    const newPassword = formData.get("newPassword");
+    if (newPassword) {
+        summaryContent.innerHTML += `<div class="summary-item"><strong>Password:</strong> <span>********</span></div>`;
     }
 
-    // Profile Photo in Summary
-    if (data.profilePhoto instanceof File) {
+    const profilePhotoInput = document.getElementById('profilePhoto');
+    if (profilePhotoInput.files && profilePhotoInput.files[0]) {
         const reader = new FileReader();
         reader.onload = function (e) {
-            const photoURL = e.target.result;
-            const photoSummaryHTML = `
-                <h4>Profile Photo</h4>
-                <div class="summary-photo-container">
-                    <img src="${photoURL}" alt="Profile Photo" class="profile-thumbnail">
-                    <label>
-                        <input type="checkbox" onclick="toggleFullImage(this, '${photoURL}')"> Show Full Image
-                    </label>
-                    <img id="fullImagePreview" src="" alt="Full Profile Photo" class="full-profile-image" style="display: none;">
+            const photoPreviewHTML = `
+                <div class="summary-item">
+                    <strong>Profile Photo:</strong><br>
+                    <img src="${e.target.result}" alt="Profile Photo" width="100" style="border-radius: 8px;">
                 </div>
             `;
-            summary.innerHTML = photoSummaryHTML + summary.innerHTML; // Add photo at the beginning
-            appendSummaryDetails(data, summary);
+            summaryContent.innerHTML += photoPreviewHTML;
+            appendRestOfSummary();
         }
-        reader.readAsDataURL(data.profilePhoto);
+        reader.readAsDataURL(profilePhotoInput.files[0]);
     } else {
-        appendSummaryDetails(data, summary);
+        appendRestOfSummary();
+    }
+
+    function appendRestOfSummary() {
+        summaryContent.innerHTML += `
+            <h3>Profession Details</h3>
+            <div class="summary-item"><strong>Profession:</strong> <span>${formData.get("profession")}</span></div>
+        `;
+
+        const company = formData.get("company");
+        if (company) {
+            summaryContent.innerHTML += `<div class="summary-item"><strong>Company:</strong> <span>${company}</span></div>`;
+        }
+        const gender = formData.get("gender");
+        const customGender = formData.get("customGender");
+        if (gender) {
+            summaryContent.innerHTML += `<div class="summary-item"><strong>Gender:</strong> <span>${gender === "Other" ? customGender : gender}</span></div>`;
+        }
+
+        summaryContent.innerHTML += `
+            <div class="summary-item"><strong>Address Line 1:</strong> <span>${formData.get("addressLine1")}</span></div>
+            <h3>Preference Details</h3>
+            <div class="summary-item"><strong>Country:</strong> <span>${formData.get("country")}</span></div>
+            <div class="summary-item"><strong>State:</strong> <span>${formData.get("state")}</span></div>
+            <div class="summary-item"><strong>City:</strong> <span>${formData.get("city")}</span></div>
+            <div class="summary-item"><strong>Subscription Plan:</strong> <span>${formData.get("plan")}</span></div>
+            <div class="summary-item"><strong>Newsletter:</strong> <span>${formData.get("newsletter") ? "Yes" : "No"}</span></div>
+        `;
     }
 }
 
-function toggleFullImage(checkbox, imageURL) {
-    const fullImagePreview = checkbox.parentNode.querySelector('.full-profile-image');
-    if (checkbox.checked) {
-        fullImagePreview.src = imageURL;
-        fullImagePreview.style.display = 'block';
-    } else {
-        fullImagePreview.style.display = 'none';
-        fullImagePreview.src = '';
-    }
-}
-
-function appendSummaryDetails(data, summary) {
-    summary.innerHTML += `<h4>Personal Information</h4>`;
-    summary.innerHTML += `<div class="summary-item"><strong>Username:</strong> <span>${data.username}</span></div>`;
-    if (data.newPassword) {
-        summary.innerHTML += `<div class="summary-item"><strong>New Password:</strong> <span>********</span></div>`;
-    }
-
-    summary.innerHTML += `<h4>Professional Details</h4>`;
-    summary.innerHTML += `<div class="summary-item"><strong>Profession:</strong> <span>${data.profession}</span></div>`;
-    if (data.profession !== "Entrepreneur") {
-        summary.innerHTML += `<div class="summary-item"><strong>Company:</strong> <span>${data.company || 'N/A'}</span></div>`;
-    }
-    if (data.gender) {
-        summary.innerHTML += `<div class="summary-item"><strong>Gender:</strong> <span>${data.gender === 'Other' ? data.customGender : data.gender}</span></div>`;
-    }
-    if (data.addressLine1) {
-        summary.innerHTML += `<div class="summary-item"><strong>Address:</strong> <span>${data.addressLine1}</span></div>`;
-    }
-
-    summary.innerHTML += `<h4>Preferences</h4>`;
-    summary.innerHTML += `<div class="summary-item"><strong>Country:</strong> <span>${data.country}</span></div>`;
-    summary.innerHTML += `<div class="summary-item"><strong>State:</strong> <span>${data.state}</span></div>`;
-    summary.innerHTML += `<div class="summary-item"><strong>City:</strong> <span>${data.city}</span></div>`;
-    summary.innerHTML += `<div class="summary-item"><strong>Subscription Plan:</strong> <span>${data.plan}</span></div>`;
-    summary.innerHTML += `<div class="summary-item"><strong>Newsletter:</strong> <span>${data.newsletter === 'on' ? 'Yes' : 'No'}</span></div>`;
-}
-
-function showSummary() {
-    currentStep = 4;
-    showStep(currentStep);
-}
-
-async function submitForm(event) {
+form.addEventListener("submit", async (event) => {
     event.preventDefault();
-    const form = document.getElementById("profileForm");
+
     const formData = new FormData(form);
+    const data = {};
+
+    for (let [key, value] of formData.entries()) {
+        if (key === 'newsletter') {
+            data[key] = value === 'on';
+        } else {
+            data[key] = value;
+        }
+    }
+    const profilePhotoInput = document.getElementById('profilePhoto');
+    let profilePhotoData = null;
+
+    if (profilePhotoInput.files && profilePhotoInput.files[0]) {
+        profilePhotoData = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result.split(',')[1]);
+            reader.onerror = reject;
+            reader.readAsDataURL(profilePhotoInput.files[0]);
+        });
+    }
+    data.profilePhoto = profilePhotoData;
 
     try {
         const response = await fetch("http://localhost:5000/api/submit", {
@@ -239,8 +277,4 @@ async function submitForm(event) {
         console.error("Fetch error:", error);
         alert("❌ Error: Failed to connect to the server.");
     }
-}
-
-document.addEventListener("DOMContentLoaded", loadCountries);
-document.getElementById("profileForm").addEventListener("submit", submitForm);
-
+});

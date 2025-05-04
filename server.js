@@ -143,3 +143,4 @@ app.get('/api/check-username/:username', async (req, res) => {
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
+

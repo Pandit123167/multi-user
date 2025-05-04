@@ -38,7 +38,7 @@
             </div>
 
             <div class="form-step" id="step-2">
-                <h3>Step 2: Profession</h3>
+                <h2>Step 2: Profession</h2>
                 <select name="profession" id="profession" onchange="toggleFields()" required>
                     <option value="">Select Profession</option>
                     <option value="Student">Student</option>
@@ -47,14 +47,16 @@
                 </select><br>
 
                 <div id="companyField">
+                    <label>Company Name:</label>
                     <input type="text" name="company" id="company" placeholder="Company Name">
                 </div>
 
                 <div id="genderSection" style="display: none; margin-top: 10px;">
                     <label><strong>Gender:</strong></label><br>
-                    <input type="radio" name="gender" value="Male" onchange="handleGenderChange()"> Male<br>
-                    <input type="radio" name="gender" value="Female" onchange="handleGenderChange()"> Female<br>
-                    <input type="radio" name="gender" value="Other" onchange="handleGenderChange()"> Other<br>
+                    <input type="radio" name="gender" value="Male" onchange="handleGenderChange()"> <label for="male">Male</label><br>
+                    <input type="radio" name="gender" value="Female" onchange="handleGenderChange()"> <label for="female">Female</label><br>
+                    <input type="radio" name="gender" value="Other" onchange="handleGenderChange()"> <label for="other">Other</label><br>
+                    <label for="customGender">Specify Other Gender:</label>
                     <input type="text" name="customGender" id="customGender" placeholder="Please specify" style="display: none; margin-top: 5px;">
                 </div>
 
